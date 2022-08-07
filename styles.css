@@ -9,6 +9,35 @@
     margin-top: 30px;
     justify-content: center;
     align-items: center;
+    position: relative;
+}
+
+.alert-dialog {
+    display: none;
+    position: absolute;
+    width: 220px;
+    height: 120px;
+    background-color: #fafafa;
+    top: 35%;
+    right: 50%;
+    border: 1px solid #000;
+    border-radius: 10px;
+    box-shadow: 0 0 10px #000;
+    /* display: flex; */
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.alert-dialog > h4 {
+    color: red;
+}
+
+#close-btn {
+    padding: 4px 24px;
+    background-color: red;
+    border-radius: 4px;
+    color: white;
 }
 
 #board {
@@ -16,7 +45,6 @@
 }
 
 .sidebar {
-    /* margin-left: 10px; */
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -24,12 +52,13 @@
 }
 
 .play-btn {
-    background-color: brown;
+    background-color: green;
     color: white;
     padding: 8px 16px;
+    border-radius: 4px;
 }
 
-.play-btn:hover {
+.play-btn:hover, #close-btn:hover {
     cursor: pointer;
     opacity: .9;
 }

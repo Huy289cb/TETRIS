@@ -1,6 +1,14 @@
 const COLS = 10;
 const ROWS = 20;
 const BLOCK_SIZE = 30;
+const randomColor = () => {
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
 const COLORS = [
     "red",
     "orange",
@@ -183,6 +191,9 @@ const KEY_CODES = {
     UP: "ArrowUp",
 };
 
+const alertDialog = document.getElementById("alert");
+const playBtn = document.getElementById("play");
+
 const canvas = document.getElementById("board");
 const ctx = canvas.getContext("2d");
 
@@ -205,14 +216,14 @@ class Board {
     }
 
     drawCell(xAxis, yAxis, colorId) {
-        this.ctx.fillStyle = COLORS[colorId] || COLORS[WHITE_ID];
+        this.ctx.fillStyle = colorId !== WHITE_ID ? randomColor() : COLORS[WHITE_ID];
         this.ctx.fillRect(
             xAxis * BLOCK_SIZE,
             yAxis * BLOCK_SIZE,
             BLOCK_SIZE,
             BLOCK_SIZE
         );
-        this.ctx.fillStyle = "black";
+        this.ctx.strokeStyle = "black";
         this.ctx.strokeRect(
             xAxis * BLOCK_SIZE,
             yAxis * BLOCK_SIZE,
@@ -255,7 +266,7 @@ class Board {
         this.gameOver = true;
         this.isPlaying = false;
         this.gameOverSound.play();
-        alert("Game Over!!!")
+        alertDialog.style.display = 'flex';
     }
 
     reset () {
@@ -271,7 +282,7 @@ class Brick {
         this.id = id;
         this.layout = BRICK_LAYOUTS[id];
         this.activeIndex = 0;
-        this.colPos = 4;
+        this.colPos = 3;
         this.rowPos = -2;
         this.landedSound = new Audio("audio/landed.mp3");
     }
@@ -415,28 +426,31 @@ class Brick {
         }
     }
 }
-
+let brick;
 const generateNewBrick = () => {
     brick = new Brick(Math.floor((Math.random() * 10) % BRICK_LAYOUTS.length));
 };
 
-board = new Board(ctx);
+const board = new Board(ctx);
 board.drawBoard();
 
-document.getElementById("play").addEventListener("click", function() {
-    const opening = new Audio("audio/opening.mp3");
-    opening.play();
-    board.reset();
-    board.isPlaying = true;
-    generateNewBrick();
-    
-    const interval = setInterval(() => {
-        if (!board.gameOver) {
-            brick.moveDown();
-        } else {
-            clearInterval(interval);
-        }
-    }, 1000);
+playBtn.addEventListener("click", function() {
+    if(!board.isPlaying) {{
+        const opening = new Audio("audio/opening.mp3");
+        opening.play();
+        board.reset();
+        board.isPlaying = true;
+        playBtn.style.display = "none";
+        generateNewBrick();
+        
+        const interval = setInterval(() => {
+            if (!board.gameOver) {
+                brick.moveDown();
+            } else {
+                clearInterval(interval);
+            }
+        }, 1000);
+    }}
 })
 
 document.addEventListener("keydown", function (e) {
@@ -464,3 +478,10 @@ document.addEventListener("keydown", function (e) {
         }
     }
 });
+
+document.getElementById("close-btn").addEventListener("click", function() {
+    alertDialog.style.display = "none";
+    playBtn.style.display = "block";
+    board.reset();
+
+})
